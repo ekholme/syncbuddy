@@ -1,0 +1,33 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Your CLI binary name
+/syncbuddy
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Dependency directories (Go modules replaced this, but good to have)
+# vendor/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# IDE/Editor specific files
+.vscode/
+.idea/
+.swp
+*~
+
+# OS-specific files
+.DS_Store
+Thumbs.db
