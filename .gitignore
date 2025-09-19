@@ -5,8 +5,8 @@
 *.so
 *.dylib
 
-# Your CLI binary name
-/syncbuddy
+# compiled binaries
+/bin
 
 # Test binary, built with `go test -c`
 *.test
