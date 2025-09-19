@@ -11,7 +11,17 @@ go install github.com/<your-username>/syncbuddy@latest
 
 ## Usage
 
-TODO
+Sync files from a source directory to a destination directory.
+
+```bash
+syncbuddy --source /path/to/source --destination /path/to/destination
+```
+
+You can also use the shorter flags:
+
+```bash
+syncbuddy -s /path/to/source -d /path/to/destination
+```
 
 ## Contributing
 

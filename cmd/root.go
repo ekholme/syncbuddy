@@ -21,21 +21,32 @@ var rootCmd = &cobra.Command{
 	Use:   "syncbuddy",
 	Short: "Sync files from a source directory to a destination directory",
 	Long: `syncbuddy is a tool for copying all files from a source directory
-	to a destination directory.`,
-	Run: func(cmd *cobra.Command, args []string) {
+to a destination directory.`,
+	// Using RunE allows us to return an error from the command, which Cobra will
+	// print to stderr. This is more idiomatic than handling errors with os.Exit.
+	RunE: func(cmd *cobra.Command, args []string) error {
+		// Validate that the source directory exists and is a directory.
+		srcInfo, err := os.Stat(sourceDir)
+		if err != nil {
+			return fmt.Errorf("error accessing source '%s': %w", sourceDir, err)
+		}
+		if !srcInfo.IsDir() {
+			return fmt.Errorf("source '%s' is not a directory", sourceDir)
+		}
+
 		fmt.Printf("Syncing from %s to %s...\n", sourceDir, destDir)
 		if err := sb.CopyDir(sourceDir, destDir); err != nil {
-			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+			return fmt.Errorf("synchronization failed: %w", err)
 		}
 		fmt.Println("Synchronization complete!")
+		return nil
 	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
-	err := rootCmd.Execute()
-	if err != nil {
+	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
 }

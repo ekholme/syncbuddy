@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 )
 
+// CopyDir recursively copies a directory from src to dst.
+// It creates directories and copies files, preserving file permissions.
 func CopyDir(src string, dst string) error {
 	return filepath.Walk(src, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
@@ -42,9 +44,12 @@ func CopyDir(src string, dst string) error {
 
 			defer destFile.Close()
 
-			_, err = io.Copy(destFile, sourceFile)
+			if _, err = io.Copy(destFile, sourceFile); err != nil {
+				return err
+			}
 
-			return err
+			// Set the destination file's permissions to match the source file's.
+			return os.Chmod(destPath, info.Mode())
 		}
 
 		return nil
