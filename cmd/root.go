@@ -11,9 +11,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// this will be set by the linker when the tool is built
-var Version = "dev"
-
 var (
 	sourceDir string
 	destDir   string
@@ -48,7 +45,8 @@ to a destination directory.`,
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
-func Execute() {
+func Execute(version string) {
+	rootCmd.Version = version
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
@@ -61,7 +59,4 @@ func init() {
 	//mark the above flags as required
 	rootCmd.MarkFlagRequired("source")
 	rootCmd.MarkFlagRequired("destination")
-
-	//version flag
-	rootCmd.Version = Version
 }

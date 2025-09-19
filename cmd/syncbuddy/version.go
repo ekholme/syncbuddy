@@ -1,3 +1,4 @@
 package main
 
-var Version = "0.1.0"
+// Version is the application version. It's set at build time using -ldflags.
+var Version = "dev"
