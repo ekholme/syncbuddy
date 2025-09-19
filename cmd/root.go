@@ -11,6 +11,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// this will be set by the linker when the tool is built
+var Version = "dev"
+
 var (
 	sourceDir string
 	destDir   string
@@ -58,4 +61,7 @@ func init() {
 	//mark the above flags as required
 	rootCmd.MarkFlagRequired("source")
 	rootCmd.MarkFlagRequired("destination")
+
+	//version flag
+	rootCmd.Version = Version
 }

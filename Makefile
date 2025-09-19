@@ -8,10 +8,13 @@ GO_PACKAGE=./cmd/$(BINARY_NAME)
 # Define the installation directory using Windows-style backslashes
 INSTALL_DIR=C:\Users\eric_ekholm\bin
 
+VERSION = 0.1.0
+
 .PHONY: build install clean test
 
 build:
-	go build -o $(BINARY_OUTPUT) $(GO_PACKAGE)
+	go build -ldflags="-X 'main.Version=$(VERSION)'" -o $(BINARY_OUTPUT) $(GO_PACKAGE)
+
 
 install: build
 	@echo "Installing $(BINARY_NAME) to $(INSTALL_DIR)..."
