@@ -1,9 +1,17 @@
 package sb
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
+
+	"github.com/spf13/cobra"
+)
+
+var (
+	sourceDir string
+	destDir   string
 )
 
 // CopyDir recursively copies a directory from src to dst.
@@ -54,4 +62,36 @@ func CopyDir(src string, dst string) error {
 
 		return nil
 	})
+}
+
+// create a func that returns the copy command
+func NewCopyCommand() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "copy",
+		Short: "Copy a directory from src to dst",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			srcInfo, err := os.Stat(sourceDir)
+			if err != nil {
+				return fmt.Errorf("error accessing source '%s': %w", sourceDir, err)
+			}
+
+			if srcInfo.IsDir() {
+				return fmt.Errorf("source '%s' is not a directory", sourceDir)
+			}
+
+			fmt.Printf("Copying from %s to %s...\n", sourceDir, destDir)
+			if err := CopyDir(sourceDir, destDir); err != nil {
+				return fmt.Errorf("copying failed: %w", err)
+			}
+			fmt.Println("Copying complete!")
+			return nil
+		},
+	}
+	cmd.Flags().StringVarP(&sourceDir, "source", "s", "", "Source directory to sync from (required)")
+	cmd.Flags().StringVarP(&destDir, "destination", "d", "", "Destination directory to sync to (required)")
+
+	//mark the above flags as required
+	cmd.MarkFlagRequired("source")
+	cmd.MarkFlagRequired("destination")
+	return cmd
 }
