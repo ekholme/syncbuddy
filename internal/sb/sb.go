@@ -78,7 +78,7 @@ func NewCopyCommand() *cobra.Command {
 				return fmt.Errorf("error accessing source '%s': %w", sourceDir, err)
 			}
 
-			if srcInfo.IsDir() {
+			if !srcInfo.IsDir() {
 				return fmt.Errorf("source '%s' is not a directory", sourceDir)
 			}
 
@@ -168,7 +168,7 @@ func NewDeleteCommand() *cobra.Command {
 				return fmt.Errorf("error accessing source '%s': %w", sourceDir, err)
 			}
 
-			if srcInfo.IsDir() {
+			if !srcInfo.IsDir() {
 				return fmt.Errorf("source '%s' is not a directory", sourceDir)
 			}
 
@@ -189,6 +189,46 @@ func NewDeleteCommand() *cobra.Command {
 	cmd.MarkFlagRequired("destination")
 	return cmd
 
+}
+
+func NewSyncCommand() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "sync",
+		Short: "Sync files from source to destination",
+		Long:  "Sync files from source to destination. First copies files from source to destination, then deletes files in destination not in source.",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			srcInfo, err := os.Stat(sourceDir)
+			if err != nil {
+				return err
+			}
+
+			if !srcInfo.IsDir() {
+				return fmt.Errorf("source '%s' is not a directory", sourceDir)
+			}
+
+			fmt.Printf("Syncing from %s to %s...\n", sourceDir, destDir)
+			if err = CopyDir(sourceDir, destDir); err != nil {
+				return fmt.Errorf("copying failed: %w", err)
+			}
+
+			fmt.Println("Copying complete!")
+
+			if err = DeleteFromDestDir(sourceDir, destDir); err != nil {
+				return fmt.Errorf("deleting failed: %w", err)
+			}
+
+			fmt.Println("Deletion complete!")
+
+			return nil
+		},
+	}
+	cmd.Flags().StringVarP(&sourceDir, "source", "s", "", "Source directory to sync from (required)")
+	cmd.Flags().StringVarP(&destDir, "destination", "d", "", "Destination directory to sync to (required)")
+
+	//mark the above flags as required
+	cmd.MarkFlagRequired("source")
+	cmd.MarkFlagRequired("destination")
+	return cmd
 }
 
 // helper to get all files in a directory

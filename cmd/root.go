@@ -24,4 +24,6 @@ func Execute(version string) {
 
 func init() {
 	rootCmd.AddCommand(sb.NewCopyCommand())
+	rootCmd.AddCommand(sb.NewDeleteCommand())
+	rootCmd.AddCommand(sb.NewSyncCommand())
 }
