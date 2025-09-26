@@ -24,10 +24,4 @@ func Execute(version string) {
 
 func init() {
 	rootCmd.AddCommand(sb.NewCopyCommand())
-	// rootCmd.Flags().StringVarP(&sourceDir, "source", "s", "", "Source directory to sync from (required)")
-	// rootCmd.Flags().StringVarP(&destDir, "destination", "d", "", "Destination directory to sync to (required)")
-
-	// //mark the above flags as required
-	// rootCmd.MarkFlagRequired("source")
-	// rootCmd.MarkFlagRequired("destination")
 }
